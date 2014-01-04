@@ -2,6 +2,7 @@
 
 var chai = require('chai');
 var debug = require('debug')('quotas:test');
+var redis = require('redis-url');
 
 var expect = chai.expect;
 
@@ -28,7 +29,7 @@ describe('Quotas', function () {
     expect(quotas.initialise).to.not.throw(Error);
   });
 
-  it('should return the correct expiry value', function () {
+  it('should return the correct expiry value.', function () {
     var quotas = new Quotas(config);
     quotas.initialise();
 
@@ -36,11 +37,11 @@ describe('Quotas', function () {
     expect(quotas.expiry('sms')).to.equal(86400);
   });
 
-  it('should check quota, decrement the value and return the remainder', function (done) {
+  it('should check quota, decrement the value and return the remainder.', function (done) {
 
     var quotas = new Quotas(config);
     quotas.initialise();
-    quotas.flush(function(err, result){
+    quotas.flush(function (err, result) {
       debug(err, result);
       expect(err).to.not.exist;
       quotas.check(1234, 'emails', function (err, result) {
@@ -59,6 +60,29 @@ describe('Quotas', function () {
 
   });
 
+  it('should use configured redis connection.', function (done) {
+
+    // remove the existing url
+    delete config.redisUrl;
+
+    // configure a client
+    config.redisClient = redis.connect('redis://localhost');
+
+    var quotas = new Quotas(config);
+    quotas.initialise();
+    quotas.flush(function (err, result) {
+      debug(err, result);
+      expect(err).to.not.exist;
+      quotas.check(1234, 'sms', function (err, result) {
+        debug(err, result);
+        expect(err).to.not.exist;
+        expect(result).to.equal(100);
+        done();
+      });
+    });
+
+
+  });
 
 });
 

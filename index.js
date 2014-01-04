@@ -26,11 +26,11 @@ var Quotas = function Quotas(options) {
       throw new Error('Missing configuration for quotas to apply.');
     }
 
-    if (!self.options.redisUrl) {
+    if (!self.options.redisClient && !self.options.redisUrl) {
       throw new Error('Missing redis URL configuration option.');
     }
 
-    self.redis = redis.connect(self.options.redisUrl);
+    self.redisClient = self.options.redisClient || redis.connect(self.options.redisUrl);
   };
 
   /**
@@ -39,9 +39,9 @@ var Quotas = function Quotas(options) {
    * @param {Function} cb
    */
   this.flush = function flush(cb) {
-    self.redis.keys(self.options.prefix + ':*', function (err, replies) {
+    self.redisClient.keys(self.options.prefix + ':*', function (err, replies) {
       debug(replies.length + " replies:");
-      var redis = self.redis;
+      var redis = self.redisClient;
 
       async.each(replies, redis.del.bind(redis), cb);
 
@@ -63,7 +63,7 @@ var Quotas = function Quotas(options) {
     if (!self.options.quotas[type].limit) throw new Error('Missing limit configuration for type', type);
 
     var key = [self.options.prefix, uid, type].join(':');
-    var redis = self.redis;
+    var redis = self.redisClient;
     var limit = self.options.quotas[type].limit;
     var expiry = self.expiry(type);
 
