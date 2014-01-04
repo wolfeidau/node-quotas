@@ -27,6 +27,9 @@
   },
   "dependencies": {
     "redis": "~0.10.0",
-    "debug": "~0.7.4"
+    "debug": "~0.7.4",
+    "xtend": "~2.1.2",
+    "redis-url": "~0.2.0",
+    "async": "~0.2.9"
   }
 }

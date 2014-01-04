@@ -1,0 +1,56 @@
+'use strict';
+
+var chai = require('chai');
+var debug = require('debug')('quotas:test');
+
+var expect = chai.expect;
+
+var Quotas = require('../index');
+
+var config = {
+  quotas: {emails: {limit: 100}, sms: {limit: 100}}, redisUrl: 'redis://localhost'
+};
+
+describe('Quotas', function () {
+
+  it('should raise an error if missing quota configuration.', function () {
+    var quotas = new Quotas({});
+    expect(quotas.initialise).to.throw(Error);
+  });
+
+  it('should raise an error if missing redis url configuration.', function () {
+    var quotas = new Quotas({quotas: {emails: {limit: 100}, sms: {limit: 100}}});
+    expect(quotas.initialise).to.throw(Error);
+  });
+
+  it('should load with valid configuration.', function () {
+    var quotas = new Quotas(config);
+    expect(quotas.initialise).to.not.throw(Error);
+  });
+
+
+  it('should check quota, decrement the value and return the remainder', function (done) {
+
+    var quotas = new Quotas(config);
+    quotas.initialise();
+    quotas.flush(function(err, results){
+      debug(err, results);
+      expect(err).to.not.exist;
+      quotas.check(1234, 'emails', function (err, results) {
+        debug(err, results);
+        expect(err).to.not.exist;
+        quotas.check(1234, 'emails', function (err, results) {
+          debug(err, results);
+          expect(err).to.not.exist;
+          expect(results).to.equal(99);
+          done();
+        });
+      });
+    });
+
+
+  });
+
+
+});
+
