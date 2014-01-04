@@ -1,6 +1,6 @@
 {
   "name": "node-quotas",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Manage quotas using Redis and NodeJS.",
   "main": "index.js",
   "scripts": {
