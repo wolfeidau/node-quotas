@@ -5,7 +5,30 @@ This module enables management of quotas in [redis](http://redis.io/).
 [![NPM](https://nodei.co/npm/node-quotas.png)](https://nodei.co/npm/node-quotas/)
 [![NPM](https://nodei.co/npm-dl/node-quotas.png)](https://nodei.co/npm/node-quotas/)
 
-# Usage
+# API
+
+```javascript
+var Quotas = require('quotas');
+
+var config = {
+  quotas: {
+      emails: {limit: 100}, // limit of 100 emails for the given period
+      sms: {limit: 100, expires: 3600} // limit of 100 sms' for the 3600 seconds (5 minutes)
+  },
+  redisUrl: 'redis://localhost',
+  expires: 86400 // default expiry of 1 day
+};
+
+var quotas = new Quotas(config);
+
+// initialise and check all the settings.
+quotas.initialise();
+
+
+
+```
+
+
 
 # features
 

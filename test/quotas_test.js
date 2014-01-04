@@ -8,7 +8,7 @@ var expect = chai.expect;
 var Quotas = require('../index');
 
 var config = {
-  quotas: {emails: {limit: 100}, sms: {limit: 100}}, redisUrl: 'redis://localhost'
+  quotas: {emails: {limit: 100, expires: 3600}, sms: {limit: 100}}, redisUrl: 'redis://localhost'
 };
 
 describe('Quotas', function () {
@@ -28,6 +28,13 @@ describe('Quotas', function () {
     expect(quotas.initialise).to.not.throw(Error);
   });
 
+  it('should return the correct expiry value', function () {
+    var quotas = new Quotas(config);
+    quotas.initialise();
+
+    expect(quotas.expiry('emails')).to.equal(3600);
+    expect(quotas.expiry('sms')).to.equal(86400);
+  });
 
   it('should check quota, decrement the value and return the remainder', function (done) {
 

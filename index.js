@@ -6,7 +6,8 @@ var debug = require('debug')('quotas');
 var async = require('async');
 
 var defaults = {
-  prefix: 'quotas'
+  prefix: 'quotas',
+  expires: 86400
 };
 
 var Quotas = function Quotas(options) {
@@ -64,20 +65,31 @@ var Quotas = function Quotas(options) {
     var key = [self.options.prefix, uid, type].join(':');
     var redis = self.redis;
     var limit = self.options.quotas[type].limit;
+    var expiry = self.expiry(type);
 
     // does the quota exist
     redis.keys(key, function (err, reply) {
       debug('reply', reply);
 
       if (reply.length === 0) {
-        debug('setex', key, 36400, limit);
-        redis.setex(key, 36400, limit, cb);
+        debug('setex', key, expiry, limit);
+        redis.setex(key, expiry, limit, cb);
       } else {
         debug('decr', key);
         redis.decr(key, cb);
       }
 
     });
+  };
+
+  /**
+   * Retrieve the expiry for a given type.
+   *
+   * @param {String} type
+   * @returns {number|config.quotas.emails.expires|*}
+   */
+  this.expiry = function expiry(type){
+    return self.options.quotas[type].expires || self.options.expires;
   };
 
 };
