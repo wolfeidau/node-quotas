@@ -1,6 +1,9 @@
-# node-quotas
+# node-quotas [![Build Status](https://drone.io/github.com/wolfeidau/node-quotas/status.png)](https://drone.io/github.com/wolfeidau/node-quotas/latest)
 
 This module enables management of quotas in [redis](http://redis.io/).
+
+[![NPM](https://nodei.co/npm/node-quotas.png)](https://nodei.co/npm/node-quotas/)
+[![NPM](https://nodei.co/npm-dl/node-quotas.png)](https://nodei.co/npm/node-quotas/)
 
 # Usage
 
