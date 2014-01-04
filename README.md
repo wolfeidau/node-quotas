@@ -28,14 +28,10 @@ quotas.check(12345, 'emails', function(err, result) {
     if(err) return cb(err)// do whatever
 
     // check the result is > 0 and let the operation through
-
+    ...
 
 });
-
-
 ```
-
-
 
 # features
 
