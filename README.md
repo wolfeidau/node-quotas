@@ -24,6 +24,13 @@ var quotas = new Quotas(config);
 // initialise and check all the settings.
 quotas.initialise();
 
+quotas.check(12345, 'emails', function(err, result) {
+    if(err) return cb(err)// do whatever
+
+    // check the result is > 0 and let the operation through
+
+
+});
 
 
 ```

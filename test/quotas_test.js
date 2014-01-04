@@ -40,16 +40,17 @@ describe('Quotas', function () {
 
     var quotas = new Quotas(config);
     quotas.initialise();
-    quotas.flush(function(err, results){
-      debug(err, results);
+    quotas.flush(function(err, result){
+      debug(err, result);
       expect(err).to.not.exist;
-      quotas.check(1234, 'emails', function (err, results) {
-        debug(err, results);
+      quotas.check(1234, 'emails', function (err, result) {
+        debug(err, result);
         expect(err).to.not.exist;
-        quotas.check(1234, 'emails', function (err, results) {
-          debug(err, results);
+        expect(result).to.equal(100);
+        quotas.check(1234, 'emails', function (err, result) {
+          debug(err, result);
           expect(err).to.not.exist;
-          expect(results).to.equal(99);
+          expect(result).to.equal(99);
           done();
         });
       });

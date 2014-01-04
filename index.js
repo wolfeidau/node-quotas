@@ -73,7 +73,9 @@ var Quotas = function Quotas(options) {
 
       if (reply.length === 0) {
         debug('setex', key, expiry, limit);
-        redis.setex(key, expiry, limit, cb);
+        redis.setex(key, expiry, limit, function(err){
+          cb(err, limit);
+        });
       } else {
         debug('decr', key);
         redis.decr(key, cb);
